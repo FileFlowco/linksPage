@@ -1,408 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FileFlow | Engineering Excellence</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FileFlow | Engineering Excellence</title>
 
-    <style>
-        /* --- SYSTEM VARIABLES --- */
-        :root {
-            --bg-base: #030303;
-            --bg-panel: rgba(12, 12, 12, 0.7);
-            --accent-primary: #00f2ff;
-            --accent-secondary: #7000ff;
-            --text-high: #ffffff;
-            --text-med: #a0a0a0;
-            --text-low: #444;
-            --border-ui: rgba(255, 255, 255, 0.06);
-            --glass-glow: rgba(255, 255, 255, 0.02);
-            --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        /* --- FOUNDATION --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.rel='stylesheet'">
 
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-high);
-            font-family: 'Outfit', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            overflow-x: hidden;
-            line-height: 1.5;
-        }
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" onload="this.rel='stylesheet'">
 
-        /* --- BACKGROUND ARCHITECTURE --- */
-        canvas#particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.4;
-        }
+<style>
+:root{
+--bg-base:#030303;
+--bg-panel:rgba(12,12,12,0.7);
+--accent-primary:#00f2ff;
+--accent-secondary:#7000ff;
+--text-high:#ffffff;
+--text-med:#a0a0a0;
+--text-low:#444;
+--border-ui:rgba(255,255,255,0.06);
+--glass-glow:rgba(255,255,255,0.02);
+--transition-smooth:all 0.5s cubic-bezier(0.16,1,0.3,1);
+}
 
-        .ambient-glow {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100vw;
-            height: 100vh;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(0, 242, 255, 0.03) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(112, 0, 255, 0.03) 0%, transparent 40%);
-            z-index: 2;
-            pointer-events: none;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-font-smoothing:antialiased;
+}
 
-        /* --- LAYOUT STRUCTURE --- */
-        .viewport-wrapper {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 480px;
-            padding: 80px 24px 120px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+body{
+background-color:var(--bg-base);
+color:var(--text-high);
+font-family:'Outfit',sans-serif;
+min-height:100vh;
+display:flex;
+justify-content:center;
+overflow-x:hidden;
+line-height:1.5;
+}
 
-        /* --- HEADER REDESIGN --- */
-        header {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 60px;
-        }
+canvas#particleCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:1;
+pointer-events:none;
+opacity:0.4;
+will-change:transform;
+}
 
-        .brand-seal {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 32px;
-        }
+.ambient-glow{
+position:fixed;
+top:0;
+left:50%;
+transform:translateX(-50%);
+width:100vw;
+height:100vh;
+background:
+radial-gradient(circle at 20% 20%,rgba(0,242,255,0.03)0%,transparent 40%),
+radial-gradient(circle at 80% 80%,rgba(112,0,255,0.03)0%,transparent 40%);
+z-index:2;
+pointer-events:none;
+}
 
-        .brand-logo {
-            width: 140px;
-            height: auto;
-            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.05));
-        }
+.viewport-wrapper{
+position:relative;
+z-index:10;
+width:100%;
+max-width:480px;
+padding:80px 24px 120px;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
 
-        .title-block h1 {
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 8px;
-            background: linear-gradient(to bottom, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+header{
+width:100%;
+text-align:center;
+margin-bottom:60px;
+}
 
-        .meta-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--text-low);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
+.brand-seal{
+position:relative;
+display:inline-block;
+margin-bottom:32px;
+}
 
-        .meta-tag::before, .meta-tag::after {
-            content: '';
-            width: 20px;
-            height: 1px;
-            background: var(--text-low);
-        }
+.brand-logo{
+width:140px;
+height:auto;
+filter:drop-shadow(0 0 30px rgba(255,255,255,0.05));
+}
 
-        /* --- LINK SUITE ARCHITECTURE --- */
-        .interface-grid {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+.title-block h1{
+font-size:42px;
+font-weight:800;
+letter-spacing:-1.5px;
+margin-bottom:8px;
+background:linear-gradient(to bottom,#fff,#888);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
-        /* --- CTA MODULE --- */
-        .cta-primary {
-            position: relative;
-            background: var(--text-high);
-            color: var(--bg-base);
-            padding: 24px;
-            border-radius: 20px;
-            text-decoration: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-            font-size: 18px;
-            transition: var(--transition-smooth);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            margin-bottom: 10px;
-        }
+.meta-tag{
+font-family:'JetBrains Mono',monospace;
+font-size:11px;
+color:var(--text-low);
+letter-spacing:4px;
+text-transform:uppercase;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+}
 
-        .cta-primary:hover {
-            transform: translateY(-4px) scale(1.01);
-            background: var(--accent-primary);
-        }
+.meta-tag::before,.meta-tag::after{
+content:'';
+width:20px;
+height:1px;
+background:var(--text-low);
+}
 
-        .cta-primary i {
-            font-size: 20px;
-            transition: var(--transition-smooth);
-        }
+.interface-grid{
+width:100%;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
 
-        .cta-primary:hover i {
-            transform: translateX(5px);
-        }
+.cta-primary{
+position:relative;
+background:var(--text-high);
+color:var(--bg-base);
+padding:24px;
+border-radius:20px;
+text-decoration:none;
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-weight:700;
+font-size:18px;
+transition:var(--transition-smooth);
+box-shadow:0 20px 40px rgba(0,0,0,0.4);
+margin-bottom:10px;
+}
 
-        /* --- STANDARD LINK MODULE --- */
-        .nav-card {
-            position: relative;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-ui);
-            padding: 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: var(--transition-smooth);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            overflow: hidden;
-        }
+.cta-primary:hover{
+transform:translateY(-4px) scale(1.01);
+background:var(--accent-primary);
+}
 
-        .nav-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent, var(--glass-glow), transparent);
-            opacity: 0;
-            transition: var(--transition-smooth);
-        }
+.cta-primary i{
+font-size:20px;
+transition:var(--transition-smooth);
+}
 
-        .nav-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            background: rgba(20, 20, 20, 0.8);
-            transform: translateX(4px);
-        }
+.cta-primary:hover i{
+transform:translateX(5px);
+}
 
-        .nav-card:hover::before {
-            opacity: 1;
-        }
+.nav-card{
+position:relative;
+background:var(--bg-panel);
+border:1px solid var(--border-ui);
+padding:20px;
+border-radius:20px;
+text-decoration:none;
+display:flex;
+align-items:center;
+gap:20px;
+transition:var(--transition-smooth);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+overflow:hidden;
+}
 
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-ui);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-med);
-            font-size: 20px;
-            transition: var(--transition-smooth);
-        }
+.nav-card::before{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,transparent,var(--glass-glow),transparent);
+opacity:0;
+transition:var(--transition-smooth);
+}
 
-        .nav-card:hover .card-icon {
-            color: var(--text-high);
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.07);
-        }
+.nav-card:hover{
+border-color:rgba(255,255,255,0.15);
+background:rgba(20,20,20,0.8);
+transform:translateX(4px);
+}
 
-        .card-info {
-            display: flex;
-            flex-direction: column;
-        }
+.nav-card:hover::before{
+opacity:1;
+}
 
-        .card-label {
-            color: var(--text-high);
-            font-weight: 600;
-            font-size: 16px;
-            letter-spacing: -0.2px;
-        }
+.card-icon{
+width:48px;
+height:48px;
+background:rgba(255,255,255,0.03);
+border:1px solid var(--border-ui);
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:var(--text-med);
+font-size:20px;
+transition:var(--transition-smooth);
+}
 
-        .card-sub {
-            color: var(--text-low);
-            font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
+.nav-card:hover .card-icon{
+color:var(--text-high);
+border-color:rgba(255,255,255,0.2);
+background:rgba(255,255,255,0.07);
+}
 
-        /* --- FOOTER DECOR --- */
-        .system-footer {
-            margin-top: 60px;
-            text-align: center;
-        }
+.card-info{
+display:flex;
+flex-direction:column;
+}
 
-        .copyright {
-            font-size: 11px;
-            color: var(--text-low);
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
+.card-label{
+color:var(--text-high);
+font-weight:600;
+font-size:16px;
+letter-spacing:-0.2px;
+}
 
-        /* --- ENTRANCE ANIMATIONS --- */
-        @keyframes reveal {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.card-sub{
+color:var(--text-low);
+font-size:12px;
+font-family:'JetBrains Mono',monospace;
+text-transform:uppercase;
+margin-top:2px;
+}
 
-        .reveal {
-            opacity: 0;
-            animation: reveal 0.8s forwards;
-        }
+.system-footer{
+margin-top:60px;
+text-align:center;
+}
 
-        /* --- RESPONSIVE MODIFIERS --- */
-        @media (max-width: 480px) {
-            .viewport-wrapper { padding-top: 60px; }
-            .title-block h1 { font-size: 36px; }
-            .cta-primary { padding: 20px; }
-        }
-    </style>
+.copyright{
+font-size:11px;
+color:var(--text-low);
+font-weight:500;
+letter-spacing:1px;
+}
+
+@keyframes reveal{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.reveal{
+opacity:0;
+animation:reveal .8s forwards;
+}
+
+@media(max-width:480px){
+.viewport-wrapper{padding-top:60px;}
+.title-block h1{font-size:36px;}
+.cta-primary{padding:20px;}
+}
+</style>
 </head>
+
 <body>
 
-    <canvas id="particleCanvas"></canvas>
-    <div class="ambient-glow"></div>
+<canvas id="particleCanvas"></canvas>
+<div class="ambient-glow"></div>
 
-    <div class="viewport-wrapper">
-        
-        <header class="reveal" style="animation-delay: 0.1s;">
-            <div class="brand-seal">
-                <img src="assets/logonobackg.png" alt="FileFlow Engineering" class="brand-logo">
-            </div>
-            <div class="title-block">
-                <h1>FileFlow</h1>
-                <div class="meta-tag">Engineering software that survives reality</div>
-            </div>
-        </header>
+<div class="viewport-wrapper">
 
-        <main class="interface-grid">
-            
-            <a href="https://booking-one-lac.vercel.app/" class="cta-primary reveal" style="animation-delay: 0.2s;">
-                <span>Book a Consultation</span>
-                <i class="fa-solid fa-arrow-right-long"></i>
-            </a>
+<header class="reveal" style="animation-delay:0.1s;">
+<div class="brand-seal">
+<img src="assets/logonobackg.png" alt="FileFlow Engineering" class="brand-logo">
+</div>
+<div class="title-block">
+<h1>FileFlow</h1>
+<div class="meta-tag">Engineering software that survives reality</div>
+</div>
+</header>
 
-            <a href="https://fileflowco.com" class="nav-card reveal" style="animation-delay: 0.3s;" target="_blank">
-                <div class="card-icon"><i class="fa-solid fa-globe"></i></div>
-                <div class="card-info">
-                    <span class="card-label">Website</span>
-                    <span class="card-sub">fileflowco.com</span>
-                </div>
-            </a>
+<main class="interface-grid">
 
-            <a href="https://instagram.com/file.flowco" class="nav-card reveal" style="animation-delay: 0.4s;" target="_blank">
-                <div class="card-icon"><i class="fa-brands fa-instagram"></i></div>
-                <div class="card-info">
-                    <span class="card-label">Instagram</span>
-                    <span class="card-sub">@file.flowco</span>
-                </div>
-            </a>
+<a href="https://booking-one-lac.vercel.app/" class="cta-primary reveal" style="animation-delay:0.2s;">
+<span>Book a Consultation</span>
+<i class="fa-solid fa-arrow-right-long"></i>
+</a>
 
-            <a href="https://www.linkedin.com/in/file-flow-7781143ab" class="nav-card reveal" style="animation-delay: 0.5s;" target="_blank">
-                <div class="card-icon"><i class="fa-brands fa-linkedin-in"></i></div>
-                <div class="card-info">
-                    <span class="card-label">Network</span>
-                    <span class="card-sub">LinkedIn Connect</span>
-                </div>
-            </a>
+<a href="https://fileflowco.com" class="nav-card reveal" style="animation-delay:0.3s;" target="_blank">
+<div class="card-icon"><i class="fa-solid fa-globe"></i></div>
+<div class="card-info">
+<span class="card-label">Website</span>
+<span class="card-sub">fileflowco.com</span>
+</div>
+</a>
 
-            <a href="mailto:fileflowinc@gmail.com" class="nav-card reveal" style="animation-delay: 0.6s;">
-                <div class="card-icon"><i class="fa-regular fa-envelope"></i></div>
-                <div class="card-info">
-                    <span class="card-label">Email</span>
-                    <span class="card-sub">Direct Channel</span>
-                </div>
-            </a>
+<a href="https://instagram.com/file.flowco" class="nav-card reveal" style="animation-delay:0.4s;" target="_blank">
+<div class="card-icon"><i class="fa-brands fa-instagram"></i></div>
+<div class="card-info">
+<span class="card-label">Instagram</span>
+<span class="card-sub">@file.flowco</span>
+</div>
+</a>
 
-        </main>
+<a href="https://www.linkedin.com/in/file-flow-7781143ab" class="nav-card reveal" style="animation-delay:0.5s;" target="_blank">
+<div class="card-icon"><i class="fa-brands fa-linkedin-in"></i></div>
+<div class="card-info">
+<span class="card-label">Network</span>
+<span class="card-sub">LinkedIn Connect</span>
+</div>
+</a>
 
-        <footer class="system-footer reveal" style="animation-delay: 0.8s;">
-            <p class="copyright">&copy; 2026 FILEFLOW INC. // ALL RIGHTS RESERVED</p>
-        </footer>
+<a href="mailto:fileflowinc@gmail.com" class="nav-card reveal" style="animation-delay:0.6s;">
+<div class="card-icon"><i class="fa-regular fa-envelope"></i></div>
+<div class="card-info">
+<span class="card-label">Email</span>
+<span class="card-sub">Direct Channel</span>
+</div>
+</a>
 
-    </div>
+</main>
 
-    <script>
-        /**
-         * PROFESSIONAL PARTICLE ENGINE
-         * Provides a "fora da casinha" atmosphere without bloating code.
-         */
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+<footer class="system-footer reveal" style="animation-delay:0.8s;">
+<p class="copyright">&copy; 2026 FILEFLOW INC. // ALL RIGHTS RESERVED</p>
+</footer>
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+</div>
 
-        window.addEventListener('resize', resize);
-        resize();
+<script>
 
-        class Particle {
-            constructor() {
-                this.init();
-            }
-            init() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 1.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.alpha = Math.random() * 0.5 + 0.2;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-            }
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+window.addEventListener("load",()=>{
 
-        function createParticles() {
-            const count = (window.innerWidth < 600) ? 40 : 100;
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
-            }
-        }
+const canvas=document.getElementById('particleCanvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
 
-        createParticles();
-        animate();
-    </script>
+resize();
+window.addEventListener('resize',resize);
+
+class Particle{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.size=Math.random()*1.5+.5;
+this.speedX=(Math.random()-.5)*.25;
+this.speedY=(Math.random()-.5)*.25;
+this.alpha=Math.random()*.5+.2;
+}
+
+update(){
+this.x+=this.speedX;
+this.y+=this.speedY;
+if(this.x<0||this.x>canvas.width)this.speedX*=-1;
+if(this.y<0||this.y>canvas.height)this.speedY*=-1;
+}
+
+draw(){
+ctx.fillStyle=`rgba(255,255,255,${this.alpha})`;
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+ctx.fill();
+}
+}
+
+const count=(window.innerWidth<600)?25:60;
+
+for(let i=0;i<count;i++){
+particles.push(new Particle());
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+p.update();
+p.draw();
+});
+requestAnimationFrame(animate);
+}
+
+animate();
+
+});
+
+</script>
+
 </body>
 </html>
