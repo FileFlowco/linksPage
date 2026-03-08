@@ -20,11 +20,9 @@ body{
 background:#050505;
 color:white;
 min-height:100vh;
-overflow:hidden;
 display:flex;
 justify-content:center;
-align-items:flex-start;
-padding-top:12vh;
+align-items:center;
 }
 
 /* animated background */
@@ -62,14 +60,18 @@ gap:28px;
 
 .logo{
 width:250px;
-max-width:45vw;
+max-width:60vw;
 margin-bottom:10px;
 animation:fade 1.2s ease forwards;
 opacity:0;
 }
 
 @keyframes fade{
-to{
+0%{
+opacity:0;
+transform:translateY(12px);
+}
+100%{
 opacity:1;
 transform:translateY(0);
 }
@@ -170,6 +172,15 @@ font-size:16px;
 
 .cta{
 font-size:20px;
+}
+
+}
+
+@media (max-width:768px){
+
+body{
+align-items:flex-start;
+padding-top:14vh;
 }
 
 }
